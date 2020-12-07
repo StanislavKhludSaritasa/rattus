@@ -41,7 +41,7 @@ jobs:
       - name: Prepare changelog
         id: changelog
         run: |
-          CHANGELOG="$(grep -ozP '(?<=### 0\.2\n)((?:.|\n(?!###)))*' changelog.md)"
+          CHANGELOG="$(grep -ozP '(?<=### ${{ github.event.inputs.tag }}\n)((?:.|\n(?!###)))*' changelog.md)"
           echo $CHANGELOG
           CHANGELOG="${CHANGELOG//'%'/'%25'}"
           echo $CHANGELOG
