@@ -41,13 +41,7 @@ jobs:
       - name: Prepare changelog
         id: changelog
         run: |
-          CHANGELOG="$(grep -ozP '(?<=### ${{ github.event.inputs.tag }}\n)((?:.|\n(?!###)))*' changelog.md)"
-          echo $CHANGELOG
-          CHANGELOG="${CHANGELOG//'%'/'%25'}"
-          echo $CHANGELOG
-          CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
-          echo $CHANGELOG
-          CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
+          CHANGELOG=$(grep -ozP '(?<=### ${{ github.event.inputs.tag }}\n)((?:.|\n(?!###)))*' changelog.md)
           echo $CHANGELOG
           echo "CHANGELOG=$CHANGELOG" >> $GITHUB_ENV
       - name: Create Release
