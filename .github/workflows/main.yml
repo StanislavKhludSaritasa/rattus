@@ -20,7 +20,7 @@ on:
 
 jobs:
   build:
-    name: Upload Release Builds
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -28,7 +28,7 @@ jobs:
         with:
           ref: ${{ github.event.inputs.tag }}
       - name: Build
-        run: make release
+        run: make install
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -47,6 +47,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} 
-          asset_path: release/rattus-linux-i386
-          asset_name: rattus-linux-i386
+          asset_path: rattus
+          asset_name: rattus
           asset_content_type: application/x-executable
