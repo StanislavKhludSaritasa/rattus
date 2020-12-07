@@ -40,7 +40,12 @@ jobs:
           GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -a -o release/rattus-windows-amd64.exe
       - name: Prepare changelog
         id: changelog
-        run: echo "CHANGELOG=$(grep -ozP '(?<=### ${{ github.event.inputs.tag }}\n)((?:.|\n(?!###)))*' changelog.md)" >> $GITHUB_ENV 
+        run: |
+          CHANGELOG=$(grep -ozP '(?<=### 0\.2\n)((?:.|\n(?!###)))*' changelog.md)
+          CHANGELOG="${CHANGELOG//'%'/'%25'}"
+          CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
+          CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
+          echo "::set-env name=CHANGELOG::$CHANGELOG"
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
