@@ -33,11 +33,11 @@ jobs:
           CHANGELOG_CONTENT="${CHANGELOG_CONTENT//$'\n'/'%0A'}"		
           CHANGELOG_CONTENT="${CHANGELOG_CONTENT//$'\r'/'%0D'}"
           echo "$CHANGELOG_CONTENT"
-          echo "CHANGELOG_CONTENT=\"$CHANGELOG_CONTENT\"" >> $GITHUB_ENV
+          echo "::set-output name=changelog::$CHANGELOG_CONTENT"
       - name: Check changelog
         id: changelog_test
         run: |
-          echo "${{ env.CHANGELOG_CONTENT }}"
+          echo ${{ steps.changelog.outputs.changelog }}
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -46,7 +46,8 @@ jobs:
         with:
           tag_name: ${{ github.event.inputs.tag }}
           release_name: Release ${{ github.event.inputs.tag }}
-          body: ${{env.CHANGELOG_CONTENT}}
+          body: |
+            ${{ steps.changelog.outputs.changelog }}
           draft: ${{ github.event.inputs.draft }}
           prerelease: ${{ github.event.inputs.prerelease }}
       - name: Install deps
