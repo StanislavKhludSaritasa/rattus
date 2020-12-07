@@ -28,9 +28,6 @@ jobs:
         with:
           ref: ${{ github.event.inputs.tag }}
       - name: Install deps
-        env:
-          CGO_ENABLED: 0
-          DEBUG: false
         run: go install
       - name: Build
         env:
@@ -44,13 +41,11 @@ jobs:
           GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -a -o release/rattus-darwin-amd64
           GOOS=windows GOARCH=386 go build -ldflags="-s -w" -a -o release/rattus-windows-i386.exe
           GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -a -o release/rattus-windows-amd64.exe
-          upx -9 --best --ultra-brute release/rattus-*
       - name: Compress
         run: |
           upx -9 --best --ultra-brute release/rattus-linux-i386
           upx -9 --best --ultra-brute release/rattus-linux-amd64
           upx -9 --best --ultra-brute release/rattus-freebsd-i386
-          upx -9 --best --ultra-brute release/rattus-freebsd-amd64
           upx -9 --best --ultra-brute release/rattus-darwin-amd64
           upx -9 --best --ultra-brute release/rattus-windows-i386.exe
           upx -9 --best --ultra-brute release/rattus-windows-amd64.exe
@@ -101,3 +96,30 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }} 
           asset_path: ./release/rattus-freebsd-amd64
           asset_name: rattus-freebsd-amd64
+      - name: Upload Release Asset darwin-amd64
+        id: upload-release-asset-darwin-amd64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: ./release/rattus-darwin-amd64
+          asset_name: rattus-darwin-amd64
+      - name: Upload Release Asset windows-i386
+        id: upload-release-asset-windows-i386
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: ./release/rattus-windows-i386.exe
+          asset_name: rattus-windows-i386.exe
+      - name: Upload Release Asset windows-amd64
+        id: upload-release-asset-windows-amd64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: ./release/rattus-windows-amd64.exe
+          asset_name: rattus-windows-amd64.exe
