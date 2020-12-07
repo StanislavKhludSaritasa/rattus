@@ -29,7 +29,8 @@ jobs:
           ref: ${{ github.event.inputs.tag }}
       - name: Build
         run: |
-          make install
+          go install -v
+          CGO_ENABLED=0 DEBUG=false GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -a -v -o rattus
           echo ${pwd}
           echo ${ls}
       - name: Archive
