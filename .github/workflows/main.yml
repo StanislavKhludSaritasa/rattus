@@ -28,16 +28,23 @@ jobs:
         with:
           ref: ${{ github.event.inputs.tag }}
       - name: Build
+        env:
+          CGO_ENABLED: 0
+          DEBUG: false
         run: |
           go install -v
-          CGO_ENABLED=0 DEBUG=false GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -a -v -o rattus
-          echo ${pwd}
-          echo ${ls}
+          GOOS=linux GOARCH=386 go build -ldflags="-s -w" -a -v -o release/rattus-linux-i386
+          GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -a -v -o release/rattus-linux-amd64
+          GOOS=freebsd GOARCH=386 go build -ldflags="-s -w" -a -v -o release/rattus-freebsd-i386
+          GOOS=freebsd GOARCH=amd64 go build -ldflags="-s -w" -a -v -o release/rattus-freebsd-amd64
+          GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -a -v -o release/rattus-darwin-amd64
+          GOOS=windows GOARCH=386 go build -ldflags="-s -w" -a -v -o release/rattus-windows-i386.exe
+          GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -a -v -o release/rattus-windows-amd64.exe
       - name: Archive
         uses: actions/upload-artifact@v2
         with:
           name: rattus
-          path: ${{ github.workspace }}/rattus
+          path: ./release/*
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -56,6 +63,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} 
-          asset_path: ${{ github.workspace }}/rattus
-          asset_name: rattus
+          asset_path: ./release/rattus-linux-amd64
+          asset_name: rattus-linux-amd64
           asset_content_type: application/x-executable
