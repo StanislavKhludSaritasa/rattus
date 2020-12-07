@@ -28,7 +28,10 @@ jobs:
         with:
           ref: ${{ github.event.inputs.tag }}
       - name: Build
-        run: make install
+        run: |
+          make install
+          echo ${pwd}
+          echo ${ls}
       - name: Archive
         uses: actions/upload-artifact@v2
         with:
