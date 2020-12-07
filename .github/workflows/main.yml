@@ -33,6 +33,17 @@ jobs:
           CHANGELOG_CONTENT="${CHANGELOG_CONTENT//$'\r'/'%0D'}"	
           echo "$CHANGELOG_CONTENT"
           echo "CHANGELOG_CONTENT=\"$CHANGELOG_CONTENT\" >> $GITHUB_ENV
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.event.inputs.tag }}
+          release_name: Release ${{ github.event.inputs.tag }}
+          body: "${{env.CHANGELOG_CONTENT}}"
+          draft: ${{ github.event.inputs.draft }}
+          prerelease: ${{ github.event.inputs.prerelease }}
       - name: Install deps
         run: go install
       - name: Build
@@ -47,17 +58,6 @@ jobs:
           GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -a -o release/rattus-darwin-amd64
           GOOS=windows GOARCH=386 go build -ldflags="-s -w" -a -o release/rattus-windows-i386.exe
           GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -a -o release/rattus-windows-amd64.exe
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.event.inputs.tag }}
-          release_name: Release ${{ github.event.inputs.tag }}
-          body: ${{env.CHANGELOG_CONTENT}}
-          draft: ${{ github.event.inputs.draft }}
-          prerelease: ${{ github.event.inputs.prerelease }}
       - name: Upload Release Asset linux-i386
         id: upload-release-asset-linux-i386
         uses: actions/upload-release-asset@v1
