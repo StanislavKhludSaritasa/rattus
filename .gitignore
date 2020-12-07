@@ -1,6 +1,4 @@
 *.template
 go.sum
-rattus
-/release/*
 .vscode/*
 .env
