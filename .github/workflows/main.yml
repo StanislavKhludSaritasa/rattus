@@ -40,6 +40,7 @@ jobs:
           GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -a -v -o release/rattus-darwin-amd64
           GOOS=windows GOARCH=386 go build -ldflags="-s -w" -a -v -o release/rattus-windows-i386.exe
           GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -a -v -o release/rattus-windows-amd64.exe
+          upx -9 --best --ultra-brute release/rattus-*
       - name: Archive
         uses: actions/upload-artifact@v2
         with:
@@ -56,8 +57,17 @@ jobs:
           body: ${{ github.event.inputs.body }}
           draft: ${{ github.event.inputs.draft }}
           prerelease: ${{ github.event.inputs.prerelease }}
-      - name: Upload Release Asset
+      - name: Upload Release Asset linux-i386
         id: upload-release-asset-linux-i386
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: ./release/rattus-linux-i386
+          asset_name: rattus-linux-i386
+      - name: Upload Release Asset linux-amd64
+        id: upload-release-asset-linux-amd64
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -65,4 +75,21 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }} 
           asset_path: ./release/rattus-linux-amd64
           asset_name: rattus-linux-amd64
-          asset_content_type: application/x-executable
+      - name: Upload Release Asset freebsd-i386
+        id: upload-release-asset-freebsd-i386
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: ./release/rattus-freebsd-i386
+          asset_name: rattus-freebsd-i386
+      - name: Upload Release Asset freebsd-amd64
+        id: upload-release-asset-freebsd-amd64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: ./release/rattus-freebsd-amd64
+          asset_name: rattus-freebsd-amd64
