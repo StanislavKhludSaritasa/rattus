@@ -30,7 +30,7 @@ jobs:
           CHANGELOG_CONTENT="$(grep -ozP '(?<=### ${{ github.event.inputs.tag }}\n)((?:.|\n(?!###)))*' changelog.md)"
           echo "$CHANGELOG_CONTENT"
           echo "$CHANGELOG_CONTENT"
-          echo "CHANGELOG_CONTENT=$CHANGELOG_CONTENT" >> $GITHUB_ENV
+          echo "CHANGELOG_CONTENT=\"$CHANGELOG_CONTENT\"" >> $GITHUB_ENV
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
