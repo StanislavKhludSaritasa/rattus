@@ -41,9 +41,12 @@ jobs:
       - name: Prepare changelog
         id: changelog
         run: |
-          CHANGELOG="$(grep -ozP '(?<=### ${{ github.event.inputs.tag }}\n)((?:.|\n(?!###)))*' changelog.md)"
-          echo $CHANGELOG
-          echo "CHANGELOG=$CHANGELOG" >> $GITHUB_ENV
+          CHANGELOG_CONTENT="$(grep -ozP '(?<=### ${{ github.event.inputs.tag }}\n)((?:.|\n(?!###)))*' changelog.md)"
+          CHANGELOG_CONTENT="${CHANGELOG_CONTENT//'%'/'%25'}"
+          CHANGELOG_CONTENT="${CHANGELOG_CONTENT//$'\n'/'%0A'}"
+          CHANGELOG_CONTENT="${CHANGELOG_CONTENT//$'\r'/'%0D'}"
+          echo $CHANGELOG_CONTENT
+          echo "CHANGELOG_CONTENT=$CHANGELOG_CONTENT" >> $GITHUB_ENV
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -52,7 +55,7 @@ jobs:
         with:
           tag_name: ${{ github.event.inputs.tag }}
           release_name: Release ${{ github.event.inputs.tag }}
-          body: ${{env.CHANGELOG}}
+          body: ${{env.CHANGELOG_CONTENT}}
           draft: ${{ github.event.inputs.draft }}
           prerelease: ${{ github.event.inputs.prerelease }}
       - name: Upload Release Asset linux-i386
