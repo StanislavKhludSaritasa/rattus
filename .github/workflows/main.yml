@@ -28,9 +28,7 @@ jobs:
         with:
           ref: ${{ github.event.inputs.tag }}
       - name: Build
-        run: |
-          make install
-          ls
+        run: make install
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -49,6 +47,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} 
-          asset_path: ./main.go
+          asset_path: ./rattus
           asset_name: rattus
           asset_content_type: application/x-executable
