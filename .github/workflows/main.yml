@@ -33,7 +33,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: rattus
-          path: rattus
+          path: ${{ github.workspace }}/rattus
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -52,6 +52,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} 
-          asset_path: ./rattus
+          asset_path: ${{ github.workspace }}/rattus
           asset_name: rattus
           asset_content_type: application/x-executable
