@@ -40,7 +40,7 @@ jobs:
           GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -a -o release/rattus-windows-amd64.exe
       - name: Prepare changelog
         id: changelog
-        run: echo "::set-output name=changelog::$(grep -ozP '(?<=### ${{ github.event.inputs.tag }}\n)((?:.|\n(?!###)))*' changelog.md)"
+        run: echo "CHANGELOG=$(grep -ozP '(?<=### ${{ github.event.inputs.tag }}\n)((?:.|\n(?!###)))*' changelog.md)" >> $GITHUB_ENV 
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -49,7 +49,7 @@ jobs:
         with:
           tag_name: ${{ github.event.inputs.tag }}
           release_name: Release ${{ github.event.inputs.tag }}
-          body: ${{steps.changelog.outputs.changelog}}
+          body: ${{env.CHANGELOG}}
           draft: ${{ github.event.inputs.draft }}
           prerelease: ${{ github.event.inputs.prerelease }}
       - name: Upload Release Asset linux-i386
