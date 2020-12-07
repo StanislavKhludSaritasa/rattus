@@ -6,9 +6,6 @@ on:
       tag:
         description: 'Version'     
         required: true
-      body:
-        description: 'Release description'
-        required: true
       draft:
         description: 'is draft?'
         required: true
@@ -49,6 +46,9 @@ jobs:
           upx -9 --best --ultra-brute release/rattus-darwin-amd64
           upx -9 --best --ultra-brute release/rattus-windows-i386.exe
           upx -9 --best --ultra-brute release/rattus-windows-amd64.exe
+      - name: Prepare changelog
+        id: changelog
+        run: echo "::set-output name=changelog::$(grep -ozP '(?<=### ${{ github.event.inputs.tag }}\n)((?:.|\n(?!###)))*' changelog.md)"
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -57,7 +57,7 @@ jobs:
         with:
           tag_name: ${{ github.event.inputs.tag }}
           release_name: Release ${{ github.event.inputs.tag }}
-          body: ${{ github.event.inputs.body }}
+          body: ${{steps.changelog.outputs.changelog}}
           draft: ${{ github.event.inputs.draft }}
           prerelease: ${{ github.event.inputs.prerelease }}
       - name: Upload Release Asset linux-i386
