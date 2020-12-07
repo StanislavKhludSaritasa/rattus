@@ -49,7 +49,7 @@ jobs:
           echo $CHANGELOG
           CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
           echo $CHANGELOG
-          echo "::set-output name=CHANGELOG::$CHANGELOG"
+          echo "CHANGELOG=${CHANGELOG}" >> $GITHUB_ENV
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -58,7 +58,7 @@ jobs:
         with:
           tag_name: ${{ github.event.inputs.tag }}
           release_name: Release ${{ github.event.inputs.tag }}
-          body: ${{steps.create_release.outputs.CHANGELOG}}
+          body: ${{env.CHANGELOG}}
           draft: ${{ github.event.inputs.draft }}
           prerelease: ${{ github.event.inputs.prerelease }}
       - name: Upload Release Asset linux-i386
