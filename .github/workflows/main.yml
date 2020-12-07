@@ -32,7 +32,6 @@ jobs:
           CGO_ENABLED: 0
           DEBUG: false
         run: go install
-      - name: Compress
       - name: Build
         env:
           CGO_ENABLED: 0
